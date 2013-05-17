@@ -74,6 +74,12 @@ License:   Licensed under MIT license
       return this.execute(sql);
     };
 
+    Base.prototype.delete = function(id) {
+      var sql;
+      sql = "DELETE FROM " + this.table_name + " WHERE id='" + id + "'";
+      return this.execute(sql);
+    };
+
     Base.prototype.all = function() {
       var objects, querySuccess, sql;
       objects = [];
@@ -117,6 +123,19 @@ License:   Licensed under MIT license
         return "'" + object[column] + "'";
       });
       sql = "INSERT INTO " + this.table_name + " (id, " + (this.columns.join(',')) + ") VALUES ('" + id + "', " + (quoted_values.join(',')) + ")";
+      return this.execute(sql, null, object);
+    };
+
+    Base.prototype.update = function(object) {
+      var id, update_values, sql;
+      id = object.id;
+
+      update_values = [];
+      for(var i=0; i<this.columns.length; i++){
+        update_values.push(" "+ this.columns[i] +" = '"+ object[this.columns[i]] +"' ");
+      }
+
+      sql = "UPDATE " + this.table_name + " SET " + (update_values.join(',')) + " WHERE id='" + id + "'";
       return this.execute(sql, null, object);
     };
 
